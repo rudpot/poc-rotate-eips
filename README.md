@@ -25,7 +25,7 @@ We make the following assumptions:
 
 * You have enough EIPs available - default allocation is 5 / account / region. If you do not have enough, try a different region or request an allocation increase as described in this [knowledgebase article](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-instance-limit/).
 
-* You have a bash shell with the AWS CLI installed and credentials set for the account / region in which you want to do the testing. You can conveniently do this from [AWS CloudShell](https://console.aws.amazon.com/cloudshell/home). 
+* You have a bash shell with the AWS CLI and `jq` installed and credentials set for the account / region in which you want to do the testing. You can conveniently do this from [AWS CloudShell](https://console.aws.amazon.com/cloudshell/home). 
 
 
 
