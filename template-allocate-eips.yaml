@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Allocate and tag elastic IPs
+
+Parameters:
+  EipPoolSize:
+    Type: Number
+    Description: Number of EIPs to allocate. Limited for cost and demo reasons.
+    Default: 3
+    AllowedValues:
+      - 1
+      - 2
+      - 3
+
+Conditions:
+  CreateEip2: !Or
+    - !Equals
+        - !Ref EipPoolSize
+        - 2
+    - !Equals
+        - !Ref EipPoolSize
+        - 3
+  CreateEip3: !Equals
+    - !Ref EipPoolSize
+    - 3
+  
+Resources:
+  Eip1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: EipRotatePocEip1
+        - Key: Group
+          Value: EipRotatePocEip
+
+  Eip2:
+    Condition: CreateEip2
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: EipRotatePocEip2
+        - Key: Group
+          Value: EipRotatePocEip
+
+  Eip3:
+    Condition: CreateEip3
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: EipRotatePocEip3
+        - Key: Group
+          Value: EipRotatePocEip
