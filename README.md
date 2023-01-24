@@ -55,11 +55,11 @@ aws cloudformation deploy \
 
 This `rotate-ips.sh` script will do the following:
 
-* find all available EIPs tagged with `Group` = `EipRotatePocEip` (L53)
-* find all available EC2 instances tagged with `Group` = `EipRotatePocEip` (L70)
-* loop over all instances (L77) and
-  * disassociate the current EIP in favor of an auto-assigned IP (L88)
-  * determine the appropriate index from the EIP list based on time of day, rotation frequency (L4), and instance offset (L98)
+* find all available EIPs tagged with `Group` = `EipRotatePocEip` (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L53)
+* find all available EC2 instances tagged with `Group` = `EipRotatePocEip` (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L70)
+* loop over all instances (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L77) and
+  * disassociate the current EIP in favor of an auto-assigned IP (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L88)
+  * determine the appropriate index from the EIP list based on time of day, rotation frequency (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L4), and instance offset (https://github.com/rudpot/poc-rotate-eips/blob/main/rotate-ips.sh#L98)
   * associate the selected EIP with the instance
 
 To test the effect of the script, log into the [AWS EC2 Console](https://.console.aws.amazon.com/ec2/home?#Addresses:) and select "Elastic IPs". For better visibility select the gear icon on the top right and deselect all the options except "Allocation ID", "Associated Instance ID", and "Association ID". You should see something like this:
@@ -82,13 +82,23 @@ Perform the following actions:
 4. run the `rotate-ips.sh` script again
 5. refresh the EIP view in the EC2 console - you should now see one or two _different_ EIPs associated with your EC2 instance(s).
 
-## Improving the script
+### Improving the script
 
 * Doing this in bash isn't super legible but this was a customer request. Rewrite this in python for more powerful array and error handling.
 * The script does not currently check whether the IPs would change and blindly follows the remove / allocate path even if the IP stays the same. Feel free to add a check for this and skip the operation if nothing changes. That way you can all it more frequently without impact.
 * The script does not check if the EIP it wants to allocate is in use. Theoretically this doesn't matter because if it is, it should be rotated as part of the script as well. Feel free to make changes as you see fit.
 * The script could be improved to skip the disassociation step and replace one EIP with another. Feel free to make changes as you see fit.
 
-## Things that can't easily be improved
+### Things that can't easily be improved
 
 * You are rotating an external IP on your instance and that means that any in-flight transactions will break. You could experiment with having multiple IPs associated with an instance and rotating them with some drain time but it would likely not buy you much.
+
+## Cleaning up
+
+To avoid incurring charges from the instances and EIPs we created, make sure to delete the cloudformation stacks:
+
+```bash
+aws cloudformation delete-stack --stack-name eip-poc-instances
+aws cloudformation wait stack-delete-complete --stack-name eip-poc-instances
+aws cloudformation delete-stack --stack-name eip-poc-eips
+```
