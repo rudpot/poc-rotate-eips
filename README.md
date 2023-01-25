@@ -1,9 +1,8 @@
-# poc-rotate-eips
+# Rotate AWS elastic IPs programmatically
 
-Demo how to rotate EIPs from EIP pool.
+Demonstrate how to rotate Amazon Web Services (AWS) Elastic IPs (EIP) by pulling from a tagged pool of EIPs. This will work with AWS provided IPs or with BYOIP IPs. 
 
-NOTE: rotating EIPs like this is probably not what you want and this is for exploration purposes only.
-
+NOTE: You may consider this if you are running a web scraping application and are running into issues with getting blocked. However, rotating EIPs like this is probably not what you want as you can get the IPs blocked long-term. As such this is for exploration purposes only.
 
 ## Licence and Warranty
 
